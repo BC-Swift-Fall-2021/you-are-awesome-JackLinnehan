@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
     
@@ -15,11 +16,37 @@ class ViewController: UIViewController {
     
     var imageNumber = -1
     var messageNumber = -1
+    var soundNumber = -1
     let totNumImages = 9
+    let totNumSounds = 6
+    var audioPlayer: AVAudioPlayer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         messageLabel.text = ""
+    }
+    
+    func playSound(name: String) {
+        if let sound = NSDataAsset(name: name) {
+            do {
+                try audioPlayer = AVAudioPlayer(data: sound.data)
+                audioPlayer.play()
+            } catch {
+                print("😡 ERROR: \(error.localizedDescription)could not initialize AVAudioPlayer Object.")
+            }
+            
+        } else {
+            print("😡 ERROR: could not read data from file sound0.")
+        }
+
+    }
+    
+    func nonRepeatingRandom(originalNum: Int, upperLimit: Int) -> Int {
+        var newNumber: Int
+        repeat {
+            newNumber = Int.random(in: 0...upperLimit)
+        } while originalNum == newNumber
+        return newNumber
     }
     
     
@@ -32,20 +59,14 @@ class ViewController: UIViewController {
                         "When the Genius Bar needs help, they call you!",
                         "You've got the design skills of Jony Ive"]
         
-        var newMessageNumber: Int
-        repeat {
-            newMessageNumber = Int.random(in: 0...messages.count-1)
-        } while messageNumber == newMessageNumber
-        messageNumber = newMessageNumber
+        messageNumber = nonRepeatingRandom(originalNum: messageNumber, upperLimit: messages.count-1)
         messageLabel.text = messages[messageNumber]
         
-        var newImageNumber: Int
-        repeat {
-            newImageNumber = (Int.random(in: 0...totNumImages))
-        } while imageNumber == newImageNumber
-        imageNumber = newImageNumber
+        imageNumber = nonRepeatingRandom(originalNum: imageNumber, upperLimit: totNumImages-1)
         imageView.image = UIImage(named: "image\(imageNumber)")
-      
+        
+        soundNumber = nonRepeatingRandom(originalNum: soundNumber, upperLimit: totNumSounds-1)
+        playSound(name: "sound\(soundNumber)")
         
     }
     
