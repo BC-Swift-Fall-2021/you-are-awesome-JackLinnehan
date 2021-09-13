@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     
     
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var playSoundSwitch: UISwitch!
     @IBOutlet weak var imageView: UIImageView!
     
     var imageNumber = -1
@@ -66,7 +67,12 @@ class ViewController: UIViewController {
         imageView.image = UIImage(named: "image\(imageNumber)")
         
         soundNumber = nonRepeatingRandom(originalNum: soundNumber, upperLimit: totNumSounds-1)
-        playSound(name: "sound\(soundNumber)")
+        if playSoundSwitch.isOn { //if switch is on it will play
+            playSound(name: "sound\(soundNumber)")
+        } else {
+            
+        }
+        
         
     }
     
@@ -74,5 +80,10 @@ class ViewController: UIViewController {
         messageLabel.text = "You Are Great!"
     }
     
+    @IBAction func playSoundToggled(_ sender: UISwitch) {
+        if !sender.isOn && audioPlayer != nil { //if isOn is not true
+            audioPlayer.stop() // stop playing
+        }
+    }
 }
 
